@@ -38,23 +38,30 @@ module.exports.Toolbar = react.createClass({
         defaultToolbarConfig.buttons.concat(config.toolbar.buttons) :
         defaultToolbarConfig.buttons;
 
+      var visibleButtons = ['rows', 'columns', 'export'];
+      if(config.toolbar.visibleButtons) {
+        visibleButtons = config.toolbar.visibleButtons;
+      }
+
       var buttons = [];
       for(var i = 0; i < configButtons.length; i++) {
-        var btnConfig = configButtons[i];
-        var refName = 'btn' + i;
+        var btnConfig = configButtons[i];  
+        if(visibleButtons.indexOf(btnConfig.btnId) !== -1) {
+            var refName = 'btn' + i;
 
-        if(btnConfig.type == 'separator') {
-          buttons.push(<div key={i} className="orb-tlbr-sep"></div>);
-        } else if(btnConfig.type == 'label') {
-          buttons.push(<div key={i} className="orb-tlbr-lbl">{btnConfig.text}</div>);
-        } else {
-          buttons.push(<div key={i} className={'orb-tlbr-btn ' + btnConfig.cssClass} title={btnConfig.tooltip} ref={refName} onClick={ this.createCallback(btnConfig.action) }></div>);
-        }
-        if(btnConfig.init) {
-          this._toInit.push({
-            ref: refName,
-            init: btnConfig.init
-          });
+            if(btnConfig.type == 'separator') {
+              buttons.push(<div key={i} className="orb-tlbr-sep"></div>);
+            } else if(btnConfig.type == 'label') {
+              buttons.push(<div key={i} className="orb-tlbr-lbl">{btnConfig.text}</div>);
+            } else {
+              buttons.push(<div key={i} className={'orb-tlbr-btn ' + btnConfig.cssClass} title={btnConfig.tooltip} ref={refName} onClick={ this.createCallback(btnConfig.action) }></div>);
+            }
+            if(btnConfig.init) {
+              this._toInit.push({
+                ref: refName,
+                init: btnConfig.init
+              });
+            }
         }
       }
 
@@ -153,22 +160,22 @@ var defaultToolbarConfig = {
 };
 
 defaultToolbarConfig.buttons = [
-  { type: 'label', text: 'Rows:'},
-  { type: 'button', tooltip: 'Expand all rows', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllRows},
-  { type: 'button', tooltip: 'Collapse all rows', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllRows},
-  { type: 'button', tooltip: 'Toggle rows sub totals', init: defaultToolbarConfig.initSubtotals(axe.Type.ROWS), 
+  { type: 'label', text: 'Rows:', btnId: 'rows'},
+  { type: 'button', tooltip: 'Expand all rows', btnId: 'rows', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllRows},
+  { type: 'button', tooltip: 'Collapse all rows', btnId: 'rows', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllRows},
+  { type: 'button', tooltip: 'Toggle rows sub totals', btnId: 'rows', init: defaultToolbarConfig.initSubtotals(axe.Type.ROWS), 
                                                        action: defaultToolbarConfig.toggleSubtotals(axe.Type.ROWS)},
-  { type: 'button', tooltip: 'Toggle rows grand total', init: defaultToolbarConfig.initGrandtotal(axe.Type.ROWS), 
+  { type: 'button', tooltip: 'Toggle rows grand total', btnId: 'rows', init: defaultToolbarConfig.initGrandtotal(axe.Type.ROWS), 
                                                         action: defaultToolbarConfig.toggleGrandtotal(axe.Type.ROWS)},
-  { type: 'separator'},
-  { type: 'label', text: 'Columns:'},
-  { type: 'button', tooltip: 'Expand all columns', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllColumns},
-  { type: 'button', tooltip: 'Collapse all columns', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllColumns},
-  { type: 'button', tooltip: 'Toggle columns sub totals', init: defaultToolbarConfig.initSubtotals(axe.Type.COLUMNS), 
+  { type: 'separator', btnId: 'rows'},
+  { type: 'label', text: 'Columns:', btnId: 'columns'},
+  { type: 'button', tooltip: 'Expand all columns', btnId: 'columns', cssClass: 'expand-all', action: defaultToolbarConfig.expandAllColumns},
+  { type: 'button', tooltip: 'Collapse all columns', btnId: 'columns', cssClass: 'collapse-all', action: defaultToolbarConfig.collapseAllColumns},
+  { type: 'button', tooltip: 'Toggle columns sub totals', btnId: 'columns', init: defaultToolbarConfig.initSubtotals(axe.Type.COLUMNS), 
                                                           action: defaultToolbarConfig.toggleSubtotals(axe.Type.COLUMNS)},
-  { type: 'button', tooltip: 'Toggle columns grand total', init: defaultToolbarConfig.initGrandtotal(axe.Type.COLUMNS), 
+  { type: 'button', tooltip: 'Toggle columns grand total', btnId: 'columns', init: defaultToolbarConfig.initGrandtotal(axe.Type.COLUMNS), 
                                                            action: defaultToolbarConfig.toggleGrandtotal(axe.Type.COLUMNS)},
-  { type: 'separator'},
-  { type: 'label', text: 'Export:'},
-  { type: 'button', tooltip: 'Export to Excel', cssClass: 'export-xls', action: defaultToolbarConfig.exportToExcel},
+  { type: 'separator', btnId: 'columns'},
+  { type: 'label', text: 'Export:', btnId: 'export'},
+  { type: 'button', tooltip: 'Export to Excel', btnId: 'export', cssClass: 'export-xls', action: defaultToolbarConfig.exportToExcel},
 ];
